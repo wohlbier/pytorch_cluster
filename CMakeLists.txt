@@ -79,3 +79,43 @@ if(WITH_CUDA)
   set_property(TARGET torch_cuda PROPERTY INTERFACE_COMPILE_OPTIONS "")
   set_property(TARGET torch_cpu PROPERTY INTERFACE_COMPILE_OPTIONS "")
 endif()
+
+#jgw
+FIND_PACKAGE (LLVM 9 REQUIRED CONFIG)
+FUNCTION (INJECTTRACER tgt)
+  SET (TA_LIB "/home/jgwohlbier/DSSoC/DASH/TraceAtlas/build/lib"
+    CACHE STRING "Path to AtlasPasses.so")
+  LINK_DIRECTORIES (${TA_LIB})
+  ADD_LIBRARY (AtlasPasses SHARED IMPORTED)
+  SET_PROPERTY (TARGET AtlasPasses
+    PROPERTY IMPORTED_LOCATION ${TA_LIB}/AtlasPasses.so)
+  TARGET_COMPILE_OPTIONS (${tgt} PRIVATE "-flto")
+  SET_TARGET_PROPERTIES (${tgt} PROPERTIES
+    LINK_FLAGS "-fuse-ld=lld -Wl,--plugin-opt=emit-llvm -Wl,--plugin-opt=save-temps")
+  ADD_CUSTOM_COMMAND (OUTPUT opt.bc
+    COMMAND ${LLVM_INSTALL_PREFIX}/bin/opt
+    -load $<TARGET_FILE:AtlasPasses>
+    -EncodedTrace $<TARGET_FILE:${tgt}> -o opt.bc
+    DEPENDS $<TARGET_FILE:${tgt}>
+    )
+  SET_SOURCE_FILES_PROPERTIES (
+    opt.bc
+    PROPERTIES
+    EXTERNAL_OBJECT true
+    GENERATED true
+    )
+  #ADD_EXECUTABLE (${tgt}-trace opt.bc)
+  ADD_LIBRARY (${tgt}-trace SHARED opt.bc)
+  SET_TARGET_PROPERTIES (${tgt}-trace PROPERTIES LINKER_LANGUAGE CXX)
+  TARGET_LINK_LIBRARIES (${tgt}-trace PRIVATE AtlasBackend z)
+ENDFUNCTION()
+
+# use llvm-dis to disassemble bitcode
+FUNCTION (GENERATE_IR tgt)
+  TARGET_COMPILE_OPTIONS(${tgt} PRIVATE -flto)
+  SET_TARGET_PROPERTIES(${tgt} PROPERTIES
+    LINK_FLAGS "-fuse-ld=lld -Wl,--plugin-opt=save-temps")
+ENDFUNCTION ()
+
+#GENERATE_IR (${PROJECT_NAME})
+INJECTTRACER (${PROJECT_NAME})

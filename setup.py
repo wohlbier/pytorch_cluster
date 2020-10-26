@@ -21,6 +21,10 @@ def get_extensions():
     define_macros = []
     extra_compile_args = {'cxx': []}
 
+    extra_compile_args['cxx'] = ['-flto', '-fPIC']
+    extra_link_args = ['-fuse-ld=lld', '-Wl,--plugin-opt=emit-llvm',
+                              '-Wl,--plugin-opt=save-temps']
+
     if WITH_CUDA:
         Extension = CUDAExtension
         define_macros += [('WITH_CUDA', None)]
@@ -51,6 +55,7 @@ def get_extensions():
             include_dirs=[extensions_dir],
             define_macros=define_macros,
             extra_compile_args=extra_compile_args,
+            extra_link_args=extra_link_args,
         )
         extensions += [extension]
 
