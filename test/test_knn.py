@@ -63,6 +63,7 @@ def test_knn_graph(dtype, device):
 
 @pytest.mark.parametrize('dtype,device', product(grad_dtypes, devices))
 def test_knn_graph_large(dtype, device):
+    #x = torch.randn(1000, 3)
     x = torch.randn(1000, 3)
 
     edge_index = knn_graph(x, k=5, flow='target_to_source', loop=True,

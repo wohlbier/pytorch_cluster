@@ -42,8 +42,8 @@ for f in ${FILES}; do
 
     echo ""
     echo "link:"
-    #cmd="${COMP} ${P}/${f}.opt.bc -o ${P}/${f} ${LINK}" # overwrites orig .so
-    cmd="${COMP} ${P}/${f}.et.bc -o ${P}/${f}.et.bc.so ${LINK}" # no overwrite
+    cmd="${COMP} ${P}/${f}.et.bc -o ${P}/${f} ${LINK}" # overwrites orig .so
+    #cmd="${COMP} ${P}/${f}.et.bc -o ${P}/${f}.et.bc.so ${LINK}" # no overwrite
     echo "${cmd}"
     eval ${cmd}
 done
@@ -60,5 +60,7 @@ echo "${cmd}"
 eval ${cmd}
 
 echo ""
+echo "Run test:"
+echo "python setup.py test --addopts test/test_knn.py"
 echo "Cartographer command:"
-echo "/home/jgwohlbier/DSSoC/DASH/TraceAtlas/build/bin/cartographer -i raw.trc -b ${P}/ptc.bc -k kernel.json -pf"
+echo "/home/jgwohlbier/DSSoC/DASH/TraceAtlas/build/bin/cartographer -i raw.trc -b ${P}/ptc.bc -k kernel.json --pf"
