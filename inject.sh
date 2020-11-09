@@ -7,6 +7,7 @@
 # ./inject.sh
 # python setup.py install
 
+PWD=/home/jgwohlbier/DSSoC/DASH/pytorch_build/pytorch_cluster
 P=./build/lib.linux-x86_64-3.7/torch_cluster
 FILES="_fps.so
        _graclus.so
@@ -70,4 +71,4 @@ echo ""
 echo "Run test:"
 echo "python setup.py test --addopts test/test_knn.py"
 echo "Cartographer command:"
-echo "/home/jgwohlbier/DSSoC/DASH/TraceAtlas/build/bin/cartographer -i raw.trc -b ${P}/ptc.bc -k kernel.json --pf"
+echo "/home/jgwohlbier/DSSoC/DASH/TraceAtlas/build/bin/cartographer -v 6 -i raw.trc -b ${PWD}/${P}/ptc.bc -k kernel.json --pf"
