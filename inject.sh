@@ -2,6 +2,7 @@
 
 # build steps.
 # Edit setup.py to use -flto, and -fuse-ld arguments, then
+# rm -rf build
 # python setup.py build
 # ./inject.sh
 # python setup.py install
