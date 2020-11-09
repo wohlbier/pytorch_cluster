@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# build steps.
+# Edit setup.py to use -flto, and -fuse-ld arguments, then
+# python setup.py build
+# ./inject.sh
+# python setup.py install
+
 P=./build/lib.linux-x86_64-3.7/torch_cluster
 FILES="_fps.so
        _graclus.so

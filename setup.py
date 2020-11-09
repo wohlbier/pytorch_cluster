@@ -20,10 +20,11 @@ def get_extensions():
     Extension = CppExtension
     define_macros = []
     extra_compile_args = {'cxx': []}
+    extra_link_args = []
 
-    extra_compile_args['cxx'] = ['-flto', '-fPIC']
-    extra_link_args = ['-fuse-ld=lld', '-Wl,--plugin-opt=emit-llvm',
-                              '-Wl,--plugin-opt=save-temps']
+    #extra_compile_args['cxx'] = ['-flto', '-fPIC']
+    #extra_link_args = ['-fuse-ld=lld', '-Wl,--plugin-opt=emit-llvm',
+    #                          '-Wl,--plugin-opt=save-temps']
 
     if WITH_CUDA:
         Extension = CUDAExtension
